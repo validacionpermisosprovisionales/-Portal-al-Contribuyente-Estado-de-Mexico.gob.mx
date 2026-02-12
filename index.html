@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gobierno · Control Vehicular · Validador de Permisos</title>
+    <style>
+        /* ========== ESTILO GUBERNAMENTAL ESTRICTO ==========
+           - Tipografía institucional: Arial / Helvetica únicamente
+           - Sin bordes redondeados, sin sombras, sin emojis
+           - Colores planos: rojo vino #9e2a2f, negro, gris neutro
+           - Cero efectos decorativos, máxima claridad
+        */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #ffffff;
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 2.2rem 1.5rem;
+            color: #000000;
+        }
+
+        .gob-container {
+            max-width: 1000px;
+            width: 100%;
+            background-color: white;
+            border: 2px solid black; /* borde negro institucional */
+            padding: 2rem 2.2rem;
+            box-shadow: none;
+        }
+
+        /* ===== ENCABEZADO PRINCIPAL ===== */
+        .header-tramites {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: black;
+            text-transform: uppercase;
+            border-bottom: 4px solid #9e2a2f; /* rojo vino */
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.2rem;
+            display: inline-block;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== TÍTULO VALIDACIÓN ===== */
+        .titulo-validar {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: black;
+            margin: 0.5rem 0 1.8rem 0;
+            text-transform: uppercase;
+            border-left: 10px solid #9e2a2f;
+            padding-left: 1.2rem;
+            line-height: 1.2;
+        }
+
+        /* ===== BARRA DE PASOS - CUADRADA, PLANA ===== */
+        .pasos-barra {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1.8rem;
+            flex-wrap: wrap;
+        }
+
+        .paso {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .paso-cuadrado {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.3rem;
+            background-color: #d9d9d9; /* gris inactivo */
+            color: black;
+            border: 2px solid black;
+            border-radius: 0;
+        }
+
+        .paso-texto {
+            font-size: 1rem;
+            font-weight: 600;
+            color: black;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .paso-activo .paso-cuadrado {
+            background-color: #9e2a2f; /* rojo vino */
+            color: white;
+            border: 2px solid black;
+        }
+
+        .paso-activo .paso-texto {
+            color: black;
+            font-weight: 800;
+        }
+
+        .separador {
+            color: black;
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin: 0 0.2rem;
+        }
+
+        /* ===== PANEL ROJO VINO - TOTALMENTE PLANO, SIN REDONDEOS ===== */
+        .panel-rojo-vino {
+            background-color: #9e2a2f;
+            border: 3px solid black; /* borde negro grueso */
+            padding: 1.6rem 2rem;
+            margin: 0.8rem 0 0.2rem 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .paso1-header {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .paso1-numero {
+            background-color: white;
+            color: black;
+            font-weight: 800;
+            font-size: 1.5rem;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid black;
+            border-radius: 0;
+        }
+
+        .paso1-titulo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        /* formulario */
+        .form-gob {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 1.8rem 2.2rem;
+        }
+
+        .campo-folio {
+            display: flex;
+            flex-direction: column;
+            flex: 2 1 280px;
+        }
+
+        .campo-folio label {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: white;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            letter-spacing: 0.8px;
+        }
+
+        .asterisco {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-left: 3px;
+        }
+
+        .input-5digitos {
+            background-color: white;
+            border: 2px solid black;
+            border-radius: 0;
+            padding: 0.8rem 1rem;
+            font-size: 1.2rem;
+            color: black;
+            font-weight: 600;
+            font-family: Arial, Helvetica, sans-serif;
+            text-transform: uppercase;
+            box-shadow: none;
+        }
+
+        .input-5digitos:focus {
+            outline: 2px solid black;
+            outline-offset: 2px;
+            border: 2px solid black;
+            background-color: #f9f9f9;
+        }
+
+        .btn-consultar {
+            background-color: black;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 800;
+            padding: 0.8rem 2.5rem;
+            border: 2px solid black;
+            border-radius: 0;
+            letter-spacing: 2px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-family: Arial, Helvetica, sans-serif;
+            box-shadow: none;
+            min-width: 170px;
+            transition: none;
+        }
+
+        .btn-consultar:hover {
+            background-color: #333;
+            border: 2px solid black;
+        }
+
+        .btn-consultar:active {
+            background-color: #111;
+        }
+
+        /* ===== LEYENDA OBLIGATORIOS - EXACTAMENTE COMO IMAGEN ===== */
+        .obligatorio-texto {
+            font-size: 0.9rem;
+            color: black;
+            background-color: transparent;
+            padding: 0.5rem 0;
+            margin-top: 0.8rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            border: none;
+            border-left: none;
+        }
+
+        /* ===== PANEL DE RESULTADOS - ESTILO DOCUMENTO OFICIAL ===== */
+        .resultado-gob {
+            border: 3px solid black;
+            padding: 1.8rem 2rem;
+            margin-top: 0.5rem;
+            background-color: white;
+            border-radius: 0;
+        }
+
+        .permiso-encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #9e2a2f;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .permiso-encabezado span:first-child {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: black;
+            text-transform: uppercase;
+        }
+
+        .folio-5d {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #e8e8e8;
+            padding: 0.3rem 1.2rem;
+            border: 2px solid black;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: black;
+        }
+
+        .estatus-sello {
+            display: inline-block;
+            border: 2px solid black;
+            padding: 0.3rem 1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            background-color: #f2f2f2;
+            color: black;
+        }
+
+        .tabla-datos {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem 1.8rem;
+            background-color: transparent;
+            border: none;
+            padding: 0;
+        }
+
+        .dato {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid black;
+            padding-bottom: 5px;
+        }
+
+        .dato-label {
+            font-size: 0.6rem;
+            font-weight: 800;
+            color: #4d4d4d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dato-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: black;
+            margin-top: 3px;
+            word-break: break-word;
+        }
+
+        .mensaje-inicial,
+        .mensaje-error {
+            border: 2px solid black;
+            border-left: 10px solid #9e2a2f;
+            padding: 1.2rem 1.5rem;
+            background-color: white;
+            font-weight: 600;
+            color: black;
+            border-radius: 0;
+        }
+
+        .sello-gob {
+            margin-top: 1.5rem;
+            border-top: 2px solid black;
+            padding-top: 0.6rem;
+            font-size: 0.6rem;
+            text-align: right;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: black;
+        }
+
+        /* badge de pruebas - estilo gobierno */
+        .permisos-prueba {
+            border: 2px solid black;
+            border-left: 10px solid #9e2a2f;
+            padding: 0.8rem 1.2rem;
+            margin-top: 2rem;
+            background-color: white;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: black;
+        }
+
+        @media (max-width: 750px) {
+            .gob-container { padding: 1.5rem; }
+            .tabla-datos { grid-template-columns: 1fr; }
+            .form-gob { flex-direction: column; align-items: stretch; }
+            .btn-consultar { width: 100%; }
+            .titulo-validar { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="gob-container">
+
+        <!-- TRÁMITES EN LÍNEA DE CONTROL VEHICULAR (encabezado) -->
+        <div class="header-tramites">
+            TRÁMITES EN LÍNEA DE CONTROL VEHICULAR
+        </div>
+
+        <!-- VALIDACIÓN DE AUTENTICIDAD DEL PERMISO (título grande) -->
+        <h1 class="titulo-validar">
+            VALIDACIÓN DE AUTENTICIDAD DEL PERMISO
+        </h1>
+
+        <!-- ===== BARRA DE PASOS - PASO 1 ACTIVO (ROJO), PASO 2 GRIS ===== -->
+        <div class="pasos-barra" id="stepBar">
+            <div class="paso paso-activo" id="step1">
+                <div class="paso-cuadrado" id="circle1">1</div>
+                <span class="paso-texto" id="text1">PASO 1 INGRESAR INFORMACIÓN</span>
+            </div>
+            <span class="separador">›</span>
+            <div class="paso" id="step2">
+                <div class="paso-cuadrado" id="circle2">2</div>
+                <span class="paso-texto" id="text2">PASO 2 CONSULTA</span>
+            </div>
+        </div>
+
+        <!-- ===== RECUADRO ROJO VINO - PASO 1 INGRESAR INFORMACIÓN ===== -->
+        <div class="panel-rojo-vino">
+            <div class="paso1-header">
+                <div class="paso1-numero">1</div>
+                <div class="paso1-titulo">INGRESAR INFORMACIÓN</div>
+            </div>
+            <div class="form-gob">
+                <div class="campo-folio">
+                    <label for="folio5">
+                        N° DE PERMISO (5 DÍGITOS) <span class="asterisco">*</span>
+                    </label>
+                    <input type="text" id="folio5" class="input-5digitos" placeholder="Ej: 49025" maxlength="5" autocomplete="off" inputmode="numeric" pattern="\d*">
+                </div>
+                <button id="btnBuscarGob" class="btn-consultar">
+                    ACEPTAR
+                </button>
+            </div>
+        </div>
+
+        <!-- TEXTO DE CAMPOS OBLIGATORIOS - DEBAJO DEL ROJO -->
+        <div class="obligatorio-texto">
+            LOS DATOS MARCADOS CON * SON OBLIGATORIOS.
+        </div>
+
+        <!-- ===== PANEL DE RESULTADOS (PASO 2 - CONSULTA) ===== -->
+        <div id="panelResultado" class="resultado-gob">
+            <div id="resultadoDinamico">
+                <div class="mensaje-inicial">
+                    INGRESE UN FOLIO DE 5 DÍGITOS Y PRESIONE ACEPTAR PARA CONSULTAR.
+                </div>
+            </div>
+        </div>
+
+        <!-- PERMISOS DE PRUEBA - SOLO 5 DÍGITOS -->
+        <div class="permisos-prueba">
+            PERMISOS DE PRUEBA (5 DÍGITOS): 93000 • 87123 • 45678 • 32001 — INGRESE UNO Y CONSULTE.
+        </div>
+    </div>
+
+    <script>
+        (function(){
+            "use strict";
+
+            // ----------------------------------------------------------------
+            // 1. PERSISTENCIA: SOLO PERMISOS DE 5 DÍGITOS NUMÉRICOS
+            // ----------------------------------------------------------------
+            const STORAGE_KEY = 'permisosVehiculares5Digitos';
+
+            function inicializarBase5Digitos() {
+                if (!localStorage.getItem(STORAGE_KEY)) {
+                    const permisos5D = {
+                        "93000": {
+                            propietario: "LÓPEZ HERNÁNDEZ, MARÍA FERNANDA",
+                            marca: "TOYOTA",
+                            modelo: "COROLLA",
+                            año: "2021",
+                            color: "GRIS METÁLICO",
+                            numSerie: "1HGBH41JXMN109186",
+                            numMotor: "2ZR-FE A8765432",
+                            fechaExpedicion: "15/03/2024",
+                            fechaFinalizacion: "14/03/2025"
+                        },
+                        "87123": {
+                            propietario: "RAMÍREZ GÓMEZ, CARLOS ENRIQUE",
+                            marca: "HONDA",
+                            modelo: "CR-V",
+                            año: "2023",
+                            color: "AZUL MARINO",
+                            numSerie: "5J6RE4H78BL023456",
+                            numMotor: "K24Z7 4455667",
+                            fechaExpedicion: "22/11/2023",
+                            fechaFinalizacion: "21/11/2024"
+                        },
+                        "45678": {
+                            propietario: "INDUSTRIAS DEL SUR, S.A. DE C.V.",
+                            marca: "FORD",
+                            modelo: "TRANSIT",
+                            año: "2022",
+                            color: "BLANCO",
+                            numSerie: "NM0A7F7KXMW123456",
+                            numMotor: "PUMA 2.2 998877",
+                            fechaExpedicion: "05/01/2024",
+                            fechaFinalizacion: "04/01/2025"
+                        },
+                        "32001": {
+                            propietario: "MARTÍNEZ LUNA, ALEJANDRA",
+                            marca: "NISSAN",
+                            modelo: "VERSA",
+                            año: "2024",
+                            color: "ROJO",
+                            numSerie: "3N1CN7AP2RL987654",
+                            numMotor: "HR16DE 556677",
+                            fechaExpedicion: "10/02/2024",
+                            fechaFinalizacion: "09/02/2025"
+                        }
+                    };
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(permisos5D));
+                }
+            }
+            inicializarBase5Digitos();
+
+            // ----------------------------------------------------------------
+            // 2. ELEMENTOS DOM
+            // ----------------------------------------------------------------
+            const step2 = document.getElementById('step2');
+            const inputFolio = document.getElementById('folio5');
+            const btnBuscar = document.getElementById('btnBuscarGob');
+            const resultadoDinamico = document.getElementById('resultadoDinamico');
+
+            // ----------------------------------------------------------------
+            // 3. CONTROL DE PASO 2 (ACTIVAR / DESACTIVAR)
+            // ----------------------------------------------------------------
+            function activarPaso2() {
+                step2.classList.add('paso-activo');
+            }
+
+            function desactivarPaso2() {
+                step2.classList.remove('paso-activo');
+            }
+
+            // Estado inicial: paso 1 siempre activo por clase en HTML, paso 2 gris
+            desactivarPaso2();
+
+            // ----------------------------------------------------------------
+            // 4. VALIDACIÓN ESTRICTA: SOLO 5 DÍGITOS NUMÉRICOS
+            // ----------------------------------------------------------------
+            function esFolioValido5Digitos(valor) {
+                return /^\d{5}$/.test(valor);
+            }
+
+            // ----------------------------------------------------------------
+            // 5. RENDERIZAR RESULTADOS (CAMPOS OFICIALES)
+            // ----------------------------------------------------------------
+            function mostrarResultado(permiso, folio) {
+                if (!permiso) {
+                    resultadoDinamico.innerHTML = `
+                        <div class="mensaje-error">
+                            <strong>PERMISO NO REGISTRADO</strong> · FOLIO: ${folio}<br>
+                            <span style="font-size:0.85rem;">EL FOLIO DEBE SER DE 5 DÍGITOS NUMÉRICOS.</span>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const html = `
+                    <div class="permiso-encabezado">
+                        <span>PERMISO DE CIRCULACIÓN</span>
+                        <span class="folio-5d">${folio}</span>
+                    </div>
+                    <div class="estatus-sello">
+                        ESTATUS: VIGENTE · VALIDADO
+                    </div>
+                    <div class="tabla-datos">
+                        <div class="dato"><span class="dato-label">PROPIETARIO</span><span class="dato-value">${permiso.propietario}</span></div>
+                        <div class="dato"><span class="dato-label">MARCA</span><span class="dato-value">${permiso.marca}</span></div>
+                        <div class="dato"><span class="dato-label">MODELO</span><span class="dato-value">${permiso.modelo}</span></div>
+                        <div class="dato"><span class="dato-label">AÑO</span><span class="dato-value">${permiso.año}</span></div>
+                        <div class="dato"><span class="dato-label">COLOR</span><span class="dato-value">${permiso.color}</span></div>
+                        <div class="dato"><span class="dato-label">NÚMERO DE SERIE</span><span class="dato-value">${permiso.numSerie}</span></div>
+                        <div class="dato"><span class="dato-label">NÚMERO DE MOTOR</span><span class="dato-value">${permiso.numMotor}</span></div>
+                        <div class="dato"><span class="dato-label">FECHA EXPEDICIÓN</span><span class="dato-value">${permiso.fechaExpedicion}</span></div>
+                        <div class="dato"><span class="dato-label">FECHA FINALIZACIÓN</span><span class="dato-value">${permiso.fechaFinalizacion}</span></div>
+                    </div>
+                    <div class="sello-gob">
+                        SISTEMA DE VERIFICACIÓN VEHICULAR · GOBIERNO
+                    </div>
+                `;
+                resultadoDinamico.innerHTML = html;
+            }
+
+            // ----------------------------------------------------------------
+            // 6. LÓGICA DE BÚSQUEDA (SOLO 5 DÍGITOS)
+            // ----------------------------------------------------------------
+            function consultarPermiso() {
+                const folioIngresado = inputFolio.value.trim();
+
+                // SIEMPRE activar paso 2 al presionar buscar
+                activarPaso2();
+
+                // 1. Validar campo vacío
+                if (folioIngresado === '') {
+                    resultadoDinamico.innerHTML = `
+                        <div class="mensaje-error">
+                            <strong>CAMPO OBLIGATORIO</strong> · EL NÚMERO DE PERMISO ES REQUERIDO (*).
+                        </div>
+                    `;
+                    return;
+                }
+
+                // 2. Validar que sean exactamente 5 dígitos numéricos
+                if (!esFolioValido5Digitos(folioIngresado)) {
+                    resultadoDinamico.innerHTML = `
+                        <div class="mensaje-error">
+                            <strong>FORMATO INCORRECTO</strong> · EL FOLIO DEBE SER DE 5 DÍGITOS NUMÉRICOS (0-9).<br>
+                            <span style="font-size:0.85rem;">EJEMPLO: 49025, 87123, 93000</span>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Obtener datos de localStorage
+                const datos = localStorage.getItem(STORAGE_KEY);
+                let catalogo = {};
+                if (datos) {
+                    try { catalogo = JSON.parse(datos); } catch(e) {}
+                }
+
+                const permisoEncontrado = catalogo[folioIngresado];
+                mostrarResultado(permisoEncontrado, folioIngresado);
+            }
+
+            // ----------------------------------------------------------------
+            // 7. EVENTOS
+            // ----------------------------------------------------------------
+            btnBuscar.addEventListener('click', function(e) {
+                e.preventDefault();
+                consultarPermiso();
+            });
+
+            inputFolio.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    consultarPermiso();
+                }
+            });
+
+            // Restringir entrada SOLO números (pero permite borrar etc)
+            inputFolio.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5);
+            });
+
+        })();
+    </script>
+</body>
+</html>
